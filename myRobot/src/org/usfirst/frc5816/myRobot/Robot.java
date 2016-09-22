@@ -10,9 +10,6 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import org.usfirst.frc5816.myRobot.commands.*;
-import org.usfirst.frc5816.myRobot.subsystems.*;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -37,6 +34,9 @@ public class Robot extends IterativeRobot {
     double slowTrigger;
     double defaultDrive;
     double fastTrigger;
+    
+	double autoVelocity;
+	double breakSpeed;
 
 	public void robotInit() {
 
@@ -77,20 +77,31 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		runAuto = true;
 		autoDriveSpeed = 0.65;
+		autoVelocity = 0.5;
 		curve = 0.0;
+		breakSpeed = 0.065;
 	}
 
 	public void autonomousPeriodic() {
+		this.driveDist(4);
+		this.driveBreak(4, -1);
+	}
+	
+	public void driveDist(double dist){
 		if (runAuto) {
 			System.out.println("Starting Movement");
-			driveTrain.drive(autoDriveSpeed, curve);
-			intakeSolenoid.set(true);
-			Timer.delay(2.3);
+			driveTrain.drive(this.autoDriveSpeed, this.curve);
+			Timer.delay(dist/this.autoVelocity);
 			System.out.println("Stopping Movement");
 			driveTrain.drive(0.0, 0.0);
 			runAuto = false;
 		}
-
+	}
+	
+	public void driveBreak(double time, int direction){
+		driveTrain.drive(direction*this.breakSpeed, 0.0);
+		Timer.delay(time);
+		driveTrain.drive(0.0, 0.0);
 	}
 
 	public void teleopInit() {
