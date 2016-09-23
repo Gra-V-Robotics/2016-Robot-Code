@@ -2,6 +2,7 @@ package org.usfirst.frc5816.myRobot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -83,8 +84,15 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		this.driveDist(4);
-		this.driveBreak(4, -1);
+		velocityFinder(0.5, 5, 1);
+		//this.driveDist(4);
+		//this.driveBreak(4, -1);
+	}
+	
+	public void velocityFinder(double power, double time, double direction) {
+		driveTrain.drive(power*direction, 0.0);
+		Timer.delay(time);
+		driveTrain.drive(0.0, 0.0);
 	}
 	
 	public void driveDist(double dist){
